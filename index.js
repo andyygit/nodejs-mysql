@@ -13,14 +13,16 @@ app.get('/', async (req, res, next) => {
       port: 3306,
       user: 'root',
       password: 'root',
-      database: 'SOMEDATABASE',
+      database: 'MES',
       namedPlaceholders: true,
       dateStrings: true,
     });
     console.log('connected!');
 
     // const [rows, fields] = await con.query('SHOW DATABASES');
-    const [rows, fields] = await conn.query('SELECT * FROM sometable');
+    const [rows, fields] = await conn.query(
+      'SELECT r.id, p.`name` as process_name, s.actual_status, r.`name` as recipe_name, r.recipe_version, r.valid_from, r.valid_to, r.description FROM Recipe r LEFT JOIN `Process` p ON r.id_process = p.id LEFT JOIN `Status` s ON r.id_status = s.id'
+    );
     // console.log(rows);
     res.contentType('application/json');
     res.status(200).json(rows);
